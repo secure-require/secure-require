@@ -24,11 +24,11 @@ npm i secure-require
 ```js
 const secureRequire = require('secure-require');
 // Since secure-require doesn't have any dependencies, this should be fine.
-safeRequire('acorn', []);
+secureRequire('acorn', []);
 // This should pass since acorn is written without any dependencies or core modules.
-safeRequire('base', []);
+secureRequire('base', []);
 // This should fail since base requires the util core module.
-safeRequire('base', ['util']);
+secureRequire('base', ['util']);
 // This should pass since we just allowed base to use the util module. Now, we
 // need not worry about base doing anything funny with the filesystem or the
 // network. It literally cannot.
