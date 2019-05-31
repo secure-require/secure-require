@@ -1,7 +1,7 @@
-import strictRequire from '../lib';
+import secureRequire from '../lib';
 
-test('strictRequire should work', () => {
-  const strictFs = strictRequire('../jest.config.js');
+test('secureRequire should work', () => {
+  const strictFs = secureRequire('../jest.config.js');
   const fs = require('../jest.config.js');
   expect(strictFs).toBe(fs);
 });
