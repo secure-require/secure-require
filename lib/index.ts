@@ -20,6 +20,9 @@ export default function secureRequire(
     return require(specifier);
   }
 
+  // TODO: Check if this resolves perfectly or if it should resolve relative to
+  // the parent.
+  // module = module.parent
   const filename = mod.Module._resolveFilename(specifier, module, false);
   const newModule = new mod.Module(filename, module);
   const dirname = path.dirname(filename);
