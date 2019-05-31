@@ -12,6 +12,8 @@ anything unexpected, no matter which version you upgrade to.
 1. Run each top-level dependency in a separate container.
 2. Restrict each dependency to `require` only a subset of core modules.
 3. Zero dependencies (duh).
+4. Uses the same stuff `require` uses behind-the-scenes, so performance dip should be next to none.
+5. Supports core, third party as well as local modules.
 
 ### Installation
 
