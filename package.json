@@ -2,8 +2,11 @@
   "name": "secure-require",
   "version": "0.1.0",
   "description": "A secure require implementation for ECMAScript",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "prepublish": "npm run build",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +18,9 @@
   "bugs": {
     "url": "https://github.com/secure-require/secure-require/issues"
   },
-  "homepage": "https://github.com/secure-require/secure-require#readme"
+  "homepage": "https://github.com/secure-require/secure-require#readme",
+  "devDependencies": {
+    "@types/node": "^12.0.4",
+    "typescript": "^3.5.1"
+  }
 }
