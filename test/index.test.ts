@@ -11,3 +11,13 @@ test('secureRequire should work with core modules', () => {
   const fs = require('fs');
   expect(strictFs).toEqual(fs);
 });
+
+test('normal require compiles modules in the same context', () => {
+  require('./fixtures/a');
+  expect(require('./fixtures/b')).toBe(0);
+})
+
+test('secureRequire compiles modules in different contexts', () => {
+  secureRequire('../test/fixtures/a');
+  expect(secureRequire('../test/fixtures/b')).toBe(1);
+})
