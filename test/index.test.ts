@@ -15,7 +15,7 @@ test('secureRequire should work with core modules', () => {
 test('secureRequire should work with third-party modules', () => {
   const strictAcorn = secureRequire('acorn');
   const acorn = require('acorn');
-  expect(strictAcorn).toEqual(acorn);
+  expect(JSON.stringify(strictAcorn)).toEqual(JSON.stringify(acorn));
 });
 
 test('normal require compiles modules in the same context', () => {

@@ -13,8 +13,6 @@ export default function secureRequire(
     context = vm.createContext();
   }
 
-  console.log(specifier);
-
   // If a NativeModule is required, not much can be done.
   // TODO: Talk to people about exposing the NativeModule class so that these
   // could be handled.
