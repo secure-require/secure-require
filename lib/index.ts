@@ -32,7 +32,6 @@ export default function secureRequire(
     { filename, parsingContext: context }
   );
 
-  // const newModule = { exports: undefined, paths: module.paths };
   fn.call(
     newModule.exports,
     newModule.exports,
