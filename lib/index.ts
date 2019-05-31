@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+const module = require('module'); // Reasons:tm:
 import * as path from 'path';
 import * as vm from 'vm';
 
@@ -12,8 +13,14 @@ export default function secureRequire(
     context = vm.createContext();
   }
 
-  // TODO: Resolve specifier to an actual filename
-  const filename = path.resolve(__dirname, specifier);
+  // If a NativeModule is required, not much can be done.
+  // TODO: Talk to people about exposing the NativeModule class so that these
+  // could be handled.
+  if (module.builtinModules.indexOf(specifier) > -1) {
+    return require(specifier);
+  }
+
+  const filename = module.Module._resolveFilename(specifier, this, false);
   const dirname = path.dirname(filename);
   const src = fs.readFileSync(filename, 'utf8');
   const fn = vm.compileFunction(
@@ -24,9 +31,9 @@ export default function secureRequire(
 
   // TODO: Make this simpler
   // TODO: Once this is simpler, upstream that change to core
-  const exports = this.exports;
-  const thisValue = exports;
-  const module = this;
-  fn.call(thisValue, exports, secureRequire, module, filename, dirname);
+  const exp = this.exports;
+  const thisValue = exp;
+  const mod = this;
+  fn.call(thisValue, exp, secureRequire, mod, filename, dirname);
   return this.exports;
 }
