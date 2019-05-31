@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as vm from 'vm';
 
-export default function strictRequire(
+export default function secureRequire(
   this: any,
   specifier: string,
   context?: vm.Context
@@ -21,5 +21,12 @@ export default function strictRequire(
     ['exports', 'require', 'module', '__filename', '__dirname'],
     { filename, parsingContext: context }
   );
-  return fn.call(this, exports, strictRequire, module, filename, dirname);
+
+  // TODO: Make this simpler
+  // TODO: Once this is simpler, upstream that change to core
+  const exports = this.exports;
+  const thisValue = exports;
+  const module = this;
+  fn.call(thisValue, exports, secureRequire, module, filename, dirname);
+  return this.exports;
 }
