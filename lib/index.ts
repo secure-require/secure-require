@@ -6,17 +6,18 @@ import * as vm from 'vm';
 export default function secureRequire(
   this: any,
   specifier: string,
+  permittedModules?: Array<string>,
   context?: vm.Context
 ): Object | undefined {
   if (!specifier || specifier === '') throw new Error();
-  if (!context || !vm.isContext(context)) {
-    context = vm.createContext();
-  }
+  if (!context || !vm.isContext(context)) context = vm.createContext();
+  if (!permittedModules || !Array.isArray(permittedModules))
+    permittedModules = mod.builtinModules;
 
   // If a NativeModule is required, not much can be done.
   // TODO: Talk to people about exposing the NativeModule class so that these
   // could be handled.
-  if (mod.builtinModules.indexOf(specifier) > -1) {
+  if (permittedModules!.indexOf(specifier) > -1) {
     return require(specifier);
   }
 
@@ -36,7 +37,7 @@ export default function secureRequire(
   fn.call(
     newModule.exports,
     newModule.exports,
-    secureRequire,
+    (id: any) => secureRequire(id, permittedModules, context),
     newModule,
     filename,
     dirname

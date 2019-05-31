@@ -27,3 +27,15 @@ test('secureRequire compiles modules in different contexts', () => {
   secureRequire('../test/fixtures/a');
   expect(secureRequire('../test/fixtures/b')).toBe(1);
 });
+
+test('secureRequire should not prevent acorn from doing stuff', () => {
+  expect(() => secureRequire('acorn', [])).not.toThrow();
+});
+
+test('secureRequire should prevent base from doing stuff', () => {
+  expect(() => secureRequire('base', [])).toThrow();
+});
+
+test('secureRequire should not prevent base from doing stuff if permissions are granted', () => {
+  expect(() => secureRequire('base', ['util'])).not.toThrow();
+});
