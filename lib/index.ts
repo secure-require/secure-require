@@ -3,8 +3,9 @@ import * as path from 'path';
 import * as vm from 'vm';
 
 export default function strictRequire(
+  this: any,
   specifier: string,
-  context: vm.Context
+  context?: vm.Context
 ): Object {
   if (!specifier || specifier === '') throw new Error();
   if (!context || !vm.isContext(context)) {
@@ -12,7 +13,7 @@ export default function strictRequire(
   }
 
   // TODO: Resolve specifier to an actual filename
-  const filename = specifier;
+  const filename = path.resolve(__dirname, specifier);
   const dirname = path.dirname(filename);
   const src = fs.readFileSync(filename, 'utf8');
   const fn = vm.compileFunction(
@@ -20,5 +21,5 @@ export default function strictRequire(
     ['exports', 'require', 'module', '__filename', '__dirname'],
     { filename, parsingContext: context }
   );
-  return fn.call(exports, exports, strictRequire, module, filename);
+  return fn.call(this, exports, strictRequire, module, filename, dirname);
 }
