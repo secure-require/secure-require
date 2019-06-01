@@ -18,6 +18,7 @@ code, no matter which version you upgrade to.
 1. Zero dependencies (duh).
 2. Uses the same stuff `require` uses behind-the-scenes, so performance dip should be next to none.
 3. Supports core, third party and local modules.
+4. Cache modules in the same context so that you get *close* to the speed of the original `require` function without losing any of the security guarantees.
 
 ## Installation
 
