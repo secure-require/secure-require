@@ -3,6 +3,8 @@ const mod = require('module'); // Reasons:tm:
 import * as path from 'path';
 import * as vm from 'vm';
 
+const cache = Object.create(null);
+
 export default function secureRequire(
   this: any,
   specifier: string,
@@ -26,7 +28,15 @@ export default function secureRequire(
   // module = module.parent
   const filename = mod.Module._resolveFilename(specifier, module, false);
   const newModule = new mod.Module(filename, module);
-  secureLoad(newModule, filename, context, permittedModules!);
+  const cacheKey = filename + permittedModules!.join('.');
+  cache[cacheKey] = newModule;
+  let threw = true;
+  try {
+    secureLoad(newModule, filename, context, permittedModules!);
+    threw = false;
+  } finally {
+    if (threw) delete cache[cacheKey];
+  }
   return newModule.exports;
 }
 
