@@ -8,21 +8,24 @@ APIs. This allows you to make sure that none of the sub-dependencies try
 anything unexpected, or are able to alter the global objects of your own application
 code, no matter which version you upgrade to.
 
+## Security Model
+
+* Full global isolation: Each top-level dependency is run in a separate container.
+* Safely restrict the `require` tree to only a subset of allowed modules, including restricting Node.js core access.
+
 ## Features
 
-1. Full global isolation: Each top-level dependency is run in a separate container.
-2. Safely restrict the `require` tree to only a subset of allowed modules, including restricting Node.js core access.
-3. Zero dependencies (duh).
-4. Uses the same stuff `require` uses behind-the-scenes, so performance dip should be next to none.
-5. Supports core, third party and local modules.
+1. Zero dependencies (duh).
+2. Uses the same stuff `require` uses behind-the-scenes, so performance dip should be next to none.
+3. Supports core, third party and local modules.
 
-### Installation
+## Installation
 
 ```
 npm i secure-require
 ```
 
-### Usage
+## Usage
 
 ```js
 const secureRequire = require('secure-require');
@@ -37,6 +40,6 @@ secureRequire('base', ['util']);
 // network. It literally cannot.
 ```
 
-### License
+## License
 
 [MIT](./LICENSE)
