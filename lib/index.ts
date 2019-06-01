@@ -6,7 +6,7 @@ import * as vm from 'vm';
 export default function secureRequire(
   this: any,
   specifier: string,
-  permittedModules?: Array<string>,
+  permittedModules?: string[],
   context?: vm.Context
 ): Object | undefined {
   if (!specifier || specifier === '') throw new Error();
@@ -26,15 +26,24 @@ export default function secureRequire(
   // module = module.parent
   const filename = mod.Module._resolveFilename(specifier, module, false);
   const newModule = new mod.Module(filename, module);
+  secureLoad(newModule, filename, context, permittedModules!);
+  return newModule.exports;
+}
+
+function secureLoad(
+  newModule: any,
+  filename: string,
+  context: vm.Context,
+  permittedModules: string[]
+) {
   const dirname = path.dirname(filename);
   const src = fs.readFileSync(filename, 'utf8');
-  const fn = vm.compileFunction(
+  const compiled = vm.compileFunction(
     src,
     ['exports', 'require', 'module', '__filename', '__dirname'],
     { filename, parsingContext: context }
   );
-
-  fn.call(
+  compiled.call(
     newModule.exports,
     newModule.exports,
     (id: any) => secureRequire(id, permittedModules, context),
@@ -42,5 +51,4 @@ export default function secureRequire(
     filename,
     dirname
   );
-  return newModule.exports;
 }
