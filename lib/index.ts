@@ -1,7 +1,7 @@
-import * as fs from 'fs';
+import fs from 'fs';
 const mod = require('module'); // Reasons:tm:
-import * as path from 'path';
-import * as vm from 'vm';
+import path from 'path';
+import vm from 'vm';
 
 export default function secureRequire(
   this: any,
