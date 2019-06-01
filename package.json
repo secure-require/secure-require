@@ -1,6 +1,6 @@
 {
   "name": "secure-require",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "A secure require implementation for ECMAScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
