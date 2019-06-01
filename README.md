@@ -5,15 +5,16 @@
 Feel more confident running a bunch of untrusted dependencies as a part of your
 application or module by allowing said dependency to only use a subset of core
 APIs. This allows you to make sure that none of the sub-dependencies try
-anything unexpected, no matter which version you upgrade to.
+anything unexpected, or are able to alter the global objects of your own application
+code, no matter which version you upgrade to.
 
 ## Features
 
-1. Run each top-level dependency in a separate container.
-2. Restrict each dependency to `require` only a subset of core modules.
+1. Full global isolation: Each top-level dependency is run in a separate container.
+2. Safely restrict the `require` tree to only a subset of allowed modules, including restricting Node.js core access.
 3. Zero dependencies (duh).
 4. Uses the same stuff `require` uses behind-the-scenes, so performance dip should be next to none.
-5. Supports core, third party as well as local modules.
+5. Supports core, third party and local modules.
 
 ### Installation
 
