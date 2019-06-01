@@ -10,8 +10,8 @@ code, no matter which version you upgrade to.
 
 ## Security Model
 
-1. Full global isolation: Each top-level dependency is run in a separate container.
-2. Safely restrict the `require` tree to only a subset of allowed modules, including restricting Node.js core access.
+* Full global isolation: Each top-level dependency is run in a separate container.
+* Safely restrict the `require` tree to only a subset of allowed modules, including restricting Node.js core access.
 
 ## Features
 
