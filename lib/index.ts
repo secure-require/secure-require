@@ -1,5 +1,5 @@
 import fs from 'fs';
-const mod = require('module'); // Reasons:tm:
+const Module = require('module'); // Reasons:tm:
 import path from 'path';
 import vm from 'vm';
 
@@ -13,7 +13,7 @@ export default function secureRequire(
   if (!specifier || specifier === '') throw new Error();
   if (!context || !vm.isContext(context)) context = vm.createContext();
   if (!permittedModules || !Array.isArray(permittedModules))
-    permittedModules = mod.builtinModules;
+    permittedModules = Module.builtinModules;
   cache = cache || Object.create(null);
 
   // If a NativeModule is required, not much can be done.
@@ -26,17 +26,13 @@ export default function secureRequire(
   // TODO: Check if this resolves perfectly or if it should resolve relative to
   // the parent.
   // module = module.parent
-  const filename: string = mod.Module._resolveFilename(
-    specifier,
-    module,
-    false
-  );
+  const filename: string = Module._resolveFilename(specifier, module, false);
   const cached = cache![filename];
   if (cached) {
     return cached.exports;
   }
 
-  const newModule = new mod.Module(filename, module);
+  const newModule = new Module(filename, module);
   cache![filename] = newModule;
   let threw = true;
   try {
