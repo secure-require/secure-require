@@ -6,13 +6,15 @@ import * as vm from 'vm';
 export default function secureRequire(
   this: any,
   specifier: string,
-  permittedModules?: Array<string>,
-  context?: vm.Context
+  permittedModules?: string[],
+  context?: vm.Context,
+  cache?: { [index: string]: any }
 ): Object | undefined {
   if (!specifier || specifier === '') throw new Error();
   if (!context || !vm.isContext(context)) context = vm.createContext();
   if (!permittedModules || !Array.isArray(permittedModules))
     permittedModules = mod.builtinModules;
+  cache = cache || Object.create(null);
 
   // If a NativeModule is required, not much can be done.
   // TODO: Talk to people about exposing the NativeModule class so that these
@@ -24,23 +26,48 @@ export default function secureRequire(
   // TODO: Check if this resolves perfectly or if it should resolve relative to
   // the parent.
   // module = module.parent
-  const filename = mod.Module._resolveFilename(specifier, module, false);
+  const filename: string = mod.Module._resolveFilename(
+    specifier,
+    module,
+    false
+  );
+  const cached = cache![filename];
+  if (cached) {
+    return cached.exports;
+  }
+
   const newModule = new mod.Module(filename, module);
+  cache![filename] = newModule;
+  let threw = true;
+  try {
+    secureLoad(newModule, filename, context, permittedModules!, cache!);
+    threw = false;
+  } finally {
+    if (threw) delete cache![filename];
+  }
+  return newModule.exports;
+}
+
+function secureLoad(
+  newModule: any,
+  filename: string,
+  context: vm.Context,
+  permittedModules: string[],
+  cache: Object
+) {
   const dirname = path.dirname(filename);
   const src = fs.readFileSync(filename, 'utf8');
-  const fn = vm.compileFunction(
+  const compiled = vm.compileFunction(
     src,
     ['exports', 'require', 'module', '__filename', '__dirname'],
     { filename, parsingContext: context }
   );
-
-  fn.call(
+  compiled.call(
     newModule.exports,
     newModule.exports,
-    (id: any) => secureRequire(id, permittedModules, context),
+    (id: any) => secureRequire(id, permittedModules, context, cache),
     newModule,
     filename,
     dirname
   );
-  return newModule.exports;
 }
