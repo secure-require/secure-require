@@ -3,12 +3,22 @@ const Module = require('module'); // Reasons:tm:
 import path from 'path';
 import vm from 'vm';
 
+interface ModuleMap {
+  [index: string]: NodeModule;
+}
+
+function createModule(filename: string, parent: NodeModule): NodeModule {
+  const mod = new Module(filename, parent);
+  mod.require = undefined;
+  return mod;
+}
+
 export default function secureRequire(
   this: any,
   specifier: string,
   permittedModules?: string[],
   context?: vm.Context,
-  cache?: { [index: string]: any }
+  cache?: ModuleMap
 ): Object | undefined {
   if (!specifier || specifier === '') throw new Error();
   if (!context || !vm.isContext(context)) context = vm.createContext();
@@ -32,7 +42,7 @@ export default function secureRequire(
     return cached.exports;
   }
 
-  const newModule = new Module(filename, module);
+  const newModule = createModule(filename, module);
   cache![filename] = newModule;
   let threw = true;
   try {
@@ -49,7 +59,7 @@ function secureLoad(
   filename: string,
   context: vm.Context,
   permittedModules: string[],
-  cache: Object
+  cache: ModuleMap
 ) {
   const dirname = path.dirname(filename);
   const src = fs.readFileSync(filename, 'utf8');
