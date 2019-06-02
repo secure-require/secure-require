@@ -2,11 +2,17 @@
 
 > A secure require implementation for ECMAScript
 
+![npm](https://img.shields.io/npm/v/secure-require.svg)
+
 Feel more confident running a bunch of untrusted dependencies as a part of your
 application or module by allowing said dependency to only use a subset of core
 APIs. This allows you to make sure that none of the sub-dependencies try
 anything unexpected, or are able to alter the global objects of your own application
 code, no matter which version you upgrade to.
+
+## Notice
+
+I'd like to humbly request you to please refrain from using this module anyplace critical since it hasn't been audited properly and is still undergoing massive changes. You should be able to better rely on it once the v1.x is released.
 
 ## Security Model
 
