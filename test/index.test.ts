@@ -24,8 +24,8 @@ test('normal require compiles modules in the same context', () => {
 });
 
 test('secureRequire compiles modules in different contexts', () => {
-  secureRequire('../test/fixtures/a');
-  expect(secureRequire('../test/fixtures/b')).toBe(1);
+  secureRequire('./fixtures/a');
+  expect(secureRequire('./fixtures/b')).toBe(1);
 });
 
 test('secureRequire should not prevent acorn from doing stuff', () => {
