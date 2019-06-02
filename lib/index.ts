@@ -14,7 +14,11 @@ export default function secureRequire(
   if (!context || !vm.isContext(context)) context = vm.createContext();
   if (!permittedModules || !Array.isArray(permittedModules))
     permittedModules = Module.builtinModules;
-  cache = cache || Object.create(null);
+  let parent;
+  if (cache === undefined) {
+    cache = Object.create(null);
+    parent = module.parent;
+  }
 
   // If a NativeModule is required, not much can be done.
   // TODO: Talk to people about exposing the NativeModule class so that these
@@ -23,10 +27,11 @@ export default function secureRequire(
     return require(specifier);
   }
 
-  // TODO: Check if this resolves perfectly or if it should resolve relative to
-  // the parent.
-  // module = module.parent
-  const filename: string = Module._resolveFilename(specifier, module, false);
+  const filename: string = Module._resolveFilename(
+    specifier,
+    parent || module,
+    false
+  );
   const cached = cache![filename];
   if (cached) {
     return cached.exports;
