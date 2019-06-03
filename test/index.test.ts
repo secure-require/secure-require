@@ -44,3 +44,14 @@ test('module require should be available inside require but not secureRequire', 
   expect(() => secureRequire('../test/fixtures/c')).toThrow();
   expect(() => require('../test/fixtures/c')).not.toThrow();
 });
+
+test('module should not be able to pass stuff by setting on core modules', () => {
+  expect(() => {
+    secureRequire('./fixtures/d/first', ['util', 'fs']);
+    secureRequire('./fixtures/d/second', ['util']);
+  }).toThrow();
+  expect(() => {
+    require('./fixtures/d/first');
+    require('./fixtures/d/second');
+  }).not.toThrow();
+});

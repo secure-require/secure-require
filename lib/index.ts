@@ -34,7 +34,13 @@ export default function secureRequire(
   // TODO: Talk to people about exposing the NativeModule class so that these
   // could be handled.
   if (permittedModules!.indexOf(specifier) > -1) {
-    return require(specifier);
+    const exp = require(specifier);
+    const proxy = new Proxy(exp, {
+      set() {
+        throw new Error("Cannot set properties in core modules.");
+      }
+    });
+    return proxy;
   }
 
   const filename: string = Module._resolveFilename(
