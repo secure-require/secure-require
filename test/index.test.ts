@@ -39,3 +39,8 @@ test('secureRequire should prevent base from doing stuff', () => {
 test('secureRequire should not prevent base from doing stuff if permissions are granted', () => {
   expect(() => secureRequire('base', ['util'])).not.toThrow();
 });
+
+test('module require should be available inside require but not secureRequire', () => {
+  expect(() => secureRequire('../test/fixtures/c')).toThrow();
+  expect(() => require('../test/fixtures/c')).not.toThrow();
+});
