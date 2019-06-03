@@ -7,6 +7,10 @@ interface ModuleMap {
   [index: string]: NodeModule;
 }
 
+interface StringIndexedObject {
+  [index: string]: any;
+}
+
 function createModule(filename: string, parent: NodeModule): NodeModule {
   const mod = new Module(filename, parent);
   mod.require = undefined;
@@ -36,11 +40,29 @@ export default function secureRequire(
   // could be handled.
   if (permittedModules!.indexOf(specifier) > -1) {
     const exp = require(specifier);
-    const proxy = new Proxy(exp, {
+    const validator = {
+      get(target: StringIndexedObject, key: string): any {
+        const res = target[key];
+        if (res === undefined) return undefined;
+        const configurable = Object.getOwnPropertyDescriptor(target, key)!
+          .configurable;
+        const writable = Object.getOwnPropertyDescriptor(target, key)!.writable;
+        if (
+          typeof res === 'object' &&
+          target[key] !== null &&
+          writable &&
+          configurable
+        ) {
+          return new Proxy(res, validator);
+        } else {
+          return res;
+        }
+      },
       set() {
         throw new Error('Cannot set properties in core modules.');
       }
-    });
+    };
+    const proxy = new Proxy(exp, validator);
     return proxy;
   }
 

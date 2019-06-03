@@ -55,3 +55,14 @@ test('module should not be able to pass stuff by setting on core modules', () =>
     require('./fixtures/d/second');
   }).not.toThrow();
 });
+
+test('module should not be able to pass stuff by setting on core modules - nested', () => {
+  expect(() => {
+    secureRequire('./fixtures/f/first', ['util', 'fs']);
+    secureRequire('./fixtures/f/second', ['util']);
+  }).toThrow();
+  expect(() => {
+    require('./fixtures/f/first');
+    require('./fixtures/f/second');
+  }).not.toThrow();
+});
