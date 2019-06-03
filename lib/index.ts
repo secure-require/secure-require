@@ -10,6 +10,7 @@ interface ModuleMap {
 function createModule(filename: string, parent: NodeModule): NodeModule {
   const mod = new Module(filename, parent);
   mod.require = undefined;
+  mod.constructor = null;
   return mod;
 }
 
@@ -37,7 +38,7 @@ export default function secureRequire(
     const exp = require(specifier);
     const proxy = new Proxy(exp, {
       set() {
-        throw new Error("Cannot set properties in core modules.");
+        throw new Error('Cannot set properties in core modules.');
       }
     });
     return proxy;
