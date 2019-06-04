@@ -21,10 +21,20 @@ I'd like to humbly request you to please refrain from using this module anyplace
 
 ## Features
 
-1. Zero dependencies (duh).
+1. Zero dependencies (wouldn't _that_ be ironic).
 2. Uses the same stuff `require` uses behind-the-scenes, so performance dip should be next to none.
 3. Supports core, third party and local modules.
 4. Cache modules in the same context so that you get *close* to the speed of the original `require` function without losing any of the security guarantees.
+
+## Imposed Restrictions (Incompatibilities)
+
+The following are the security restrictions that are imposed by the function on your dependencies to your ensure safety. In case you disagree with any of these, or have a valid use case for doing any of the following that you believe should be supported, please do not hesitate to reach out.
+
+1. A dependency cannot make use of any core module which isn't whitelisted throughout it's subtree (duh).
+2. Since modules are compiled in seperate VM Contexts, monkey-patching globals will not work.
+3. When a module requires a core module, they cannot set any property anywhere on that core module.
+4. The use of `module.require` is forbidden.
+5. No module can require the `Module` class anywhere down the chain.
 
 ## Installation
 
