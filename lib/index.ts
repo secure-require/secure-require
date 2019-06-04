@@ -8,7 +8,7 @@ interface ModuleMap {
 }
 
 interface StringIndexedObject {
-  [index: string]: any;
+  [index: string]: Object;
 }
 
 function createModule(filename: string, parent: NodeModule): NodeModule {
@@ -19,7 +19,6 @@ function createModule(filename: string, parent: NodeModule): NodeModule {
 }
 
 export default function secureRequire(
-  this: any,
   specifier: string,
   permittedModules?: string[],
   context?: vm.Context,
@@ -43,7 +42,7 @@ export default function secureRequire(
     const exp = require(specifier);
 
     const validator = {
-      get(target: StringIndexedObject, key: string): any {
+      get(target: StringIndexedObject, key: string): Object | undefined {
         const res = Reflect.get(target, key);
         if (res === undefined) return undefined;
         const desc = Object.getOwnPropertyDescriptor(target, key)!;
@@ -86,7 +85,7 @@ export default function secureRequire(
 }
 
 function secureLoad(
-  newModule: any,
+  newModule: NodeModule,
   filename: string,
   context: vm.Context,
   permittedModules: string[],
@@ -102,7 +101,7 @@ function secureLoad(
   compiled.call(
     newModule.exports,
     newModule.exports,
-    (id: any) => secureRequire(id, permittedModules, context, cache),
+    (id: string) => secureRequire(id, permittedModules, context, cache),
     newModule,
     filename,
     dirname
