@@ -72,7 +72,7 @@ export default function secureRequire(
     return cached.exports;
   }
 
-  const newModule = createModule(filename, module);
+  const newModule = createModule(filename, parent || module);
   cache![filename] = newModule;
   let threw = true;
   try {
