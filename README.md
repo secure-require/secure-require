@@ -3,6 +3,7 @@
 > A secure require implementation for ECMAScript
 
 ![npm](https://img.shields.io/npm/v/secure-require.svg)
+[![CircleCI](https://circleci.com/gh/secure-require/secure-require/tree/master.svg?style=svg)](https://circleci.com/gh/secure-require/secure-require/tree/master)
 
 Feel more confident running a bunch of untrusted dependencies as a part of your
 application or module by allowing said dependency to only use a subset of core
