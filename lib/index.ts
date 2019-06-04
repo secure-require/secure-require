@@ -42,14 +42,14 @@ export default function secureRequire(
     const exp = require(specifier);
     const validator = {
       get(target: StringIndexedObject, key: string): any {
-        const res = target[key];
+        const res = Reflect.get(target, key);
         if (res === undefined) return undefined;
         const configurable = Object.getOwnPropertyDescriptor(target, key)!
           .configurable;
         const writable = Object.getOwnPropertyDescriptor(target, key)!.writable;
         if (
           typeof res === 'object' &&
-          target[key] !== null &&
+          res !== null &&
           writable &&
           configurable
         ) {
