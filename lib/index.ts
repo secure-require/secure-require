@@ -39,20 +39,17 @@ export default function secureRequire(
   // TODO: Talk to people about exposing the NativeModule class so that these
   // could be handled.
   if (permittedModules!.indexOf(specifier) > -1) {
+    if (specifier === 'module') throw new Error('Cannot require Module class.');
     const exp = require(specifier);
+
     const validator = {
       get(target: StringIndexedObject, key: string): any {
         const res = Reflect.get(target, key);
         if (res === undefined) return undefined;
-        const configurable = Object.getOwnPropertyDescriptor(target, key)!
-          .configurable;
-        const writable = Object.getOwnPropertyDescriptor(target, key)!.writable;
-        if (
-          typeof res === 'object' &&
-          res !== null &&
-          writable &&
-          configurable
-        ) {
+        const desc = Object.getOwnPropertyDescriptor(target, key)!;
+        const { writable, configurable } = desc;
+        const nonPrimitive = typeof res === 'object' && res !== null;
+        if (nonPrimitive && writable && configurable) {
           return new Proxy(res, validator);
         } else {
           return res;

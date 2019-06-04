@@ -66,3 +66,15 @@ test('module should not be able to pass stuff by setting on core modules - neste
     require('./fixtures/f/second');
   }).not.toThrow();
 });
+
+test('module should not be able to require the Module class, even if it is permitted', () => {
+  expect(() => {
+    secureRequire('./fixtures/g', []);
+  }).toThrow();
+  expect(() => {
+    secureRequire('./fixtures/g', ['module']);
+  }).toThrow();
+  expect(() => {
+    require('./fixtures/g');
+  }).not.toThrow();
+});
