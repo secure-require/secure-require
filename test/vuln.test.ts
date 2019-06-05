@@ -38,3 +38,24 @@ test('04 - module should not be able to require the Module class, even if it is 
     require('./fixtures/g');
   }).not.toThrow();
 });
+
+test.skip('05 - module should not be able to alter core via called or constructed functions.', () => {
+  /*
+  secureRequire('./fixtures/h', ['events']);
+  const Emitter = require('events');
+  new Emitter().on('myevent'); // logs "REPLACED ..."
+  */
+  expect(() => {
+    secureRequire('./fixtures/h', ['events']);
+  }).toThrow();
+});
+
+test.skip('06 - module should not be able to alter core via provided require() function.', () => {
+  /*
+  secureRequire('./fixtures/i', []);
+  (function a() {}).call({});// logs "REPLACED ..."
+  */
+  expect(() => {
+    secureRequire('./fixtures/i', []);
+  }).toThrow();
+});
