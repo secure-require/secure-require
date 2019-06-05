@@ -1,8 +1,8 @@
 import secureRequire from '../lib';
 
 test('01 - Should work with local files', () => {
-  const strictFs = secureRequire('../jest.config.js');
-  const fs = require('../jest.config.js');
+  const strictFs = secureRequire('../jest.config');
+  const fs = require('../jest.config');
   expect(strictFs).toEqual(fs);
 });
 
