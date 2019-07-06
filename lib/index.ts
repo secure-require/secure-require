@@ -67,6 +67,11 @@ export default function secureRequire(
     parent || module,
     false
   );
+  
+  if (filename.endsWith('.node')) {
+    return null;
+  }
+
   const cached = cache![filename];
   if (cached) {
     return cached.exports;
