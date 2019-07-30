@@ -22,12 +22,23 @@ export default function secureRequire(
   specifier: string,
   permittedModules?: string[],
   context?: vm.Context,
-  cache?: ModuleMap
+  cache?: ModuleMap,
+  security?: { [index: string]: string[] }
 ): Object | undefined {
   if (!specifier || specifier === '') throw new Error();
   if (!context || !vm.isContext(context)) context = vm.createContext();
-  if (!permittedModules || !Array.isArray(permittedModules))
-    permittedModules = Module.builtinModules;
+  if (!permittedModules || !Array.isArray(permittedModules)) {
+    if (!security) {
+      security = JSON.parse(
+        fs.readFileSync(path.join(process.cwd(), 'package.json')).toString()
+      ).security;
+    }
+    if (security !== undefined && Object.keys(security).includes(specifier)) {
+      permittedModules = security[specifier];
+    } else {
+      permittedModules = Module.builtinModules;
+    }
+  }
   let parent;
   if (cache === undefined) {
     cache = Object.create(null);
@@ -37,7 +48,7 @@ export default function secureRequire(
   // If a NativeModule is required, not much can be done.
   // TODO: Talk to people about exposing the NativeModule class so that these
   // could be handled.
-  if (permittedModules!.indexOf(specifier) > -1) {
+  if (permittedModules!.includes(specifier)) {
     if (specifier === 'module') throw new Error('Cannot require Module class.');
     const exp = require(specifier);
 
@@ -76,7 +87,14 @@ export default function secureRequire(
   cache![filename] = newModule;
   let threw = true;
   try {
-    secureLoad(newModule, filename, context, permittedModules!, cache!);
+    secureLoad(
+      newModule,
+      filename,
+      context,
+      permittedModules!,
+      cache!,
+      security
+    );
     threw = false;
   } finally {
     if (threw) delete cache![filename];
@@ -89,7 +107,8 @@ function secureLoad(
   filename: string,
   context: vm.Context,
   permittedModules: string[],
-  cache: ModuleMap
+  cache: ModuleMap,
+  security?: { [index: string]: string[] }
 ) {
   const dirname = path.dirname(filename);
   const src = fs.readFileSync(filename, 'utf8');
@@ -101,7 +120,8 @@ function secureLoad(
   compiled.call(
     newModule.exports,
     newModule.exports,
-    (id: string) => secureRequire(id, permittedModules, context, cache),
+    (id: string) =>
+      secureRequire(id, permittedModules, context, cache, security),
     newModule,
     filename,
     dirname
