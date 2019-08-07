@@ -29,7 +29,7 @@ I'd like to humbly request you to please refrain from using this module anyplace
 
 ## Imposed Restrictions (Incompatibilities)
 
-The following are the security restrictions that are imposed by the function on your dependencies to your ensure safety. In case you disagree with any of these, or have a valid use case for doing any of the following that you believe should be supported, please do not hesitate to reach out.
+The following are the security restrictions that are imposed by the function on your dependencies to ensure your safety. In case you disagree with any of these, or have a valid use case for doing any of the following that you believe should be supported, please do not hesitate to reach out.
 
 1. A dependency cannot make use of any core module which isn't whitelisted throughout it's subtree (duh).
 2. Since modules are compiled in seperate VM Contexts, monkey-patching globals will not work.
